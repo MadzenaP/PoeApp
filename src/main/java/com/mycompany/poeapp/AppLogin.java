@@ -18,7 +18,7 @@ class AppLogin {
     private String lastName;
     private String username;
     private String password;
-    private String cellPhoneNumebr;
+    private String cellPhoneNumber;
     
     public AppLogin(){
         
@@ -71,7 +71,7 @@ class AppLogin {
         
         this.username = username;
         this.password = password;
-        this.cellPhoneNumebr = cellPhoneNumber;
+        this.cellPhoneNumber = cellPhoneNumber;
         return "User Successfully registered";
     }
     public boolean loginUser(String username, String password){
@@ -106,9 +106,7 @@ class AppLogin {
     public String getUsername(){
         return username;
     }
-    public String getUsername(){
-        return username;
-    }
+    
     
     public String getCellPhoneNumber(){
         return cellPhoneNumber;
