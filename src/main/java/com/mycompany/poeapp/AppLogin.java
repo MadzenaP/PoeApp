@@ -59,14 +59,14 @@ class AppLogin {
     
     public String registerUser(String username, String password, String cellPhoneNumber){
         if (!checkUserName(username)){
-            return "username does not meet username requirements, usename must contain an underscore and is more than five characters in lenghth";
+            return "User has not been registered";
                     
         }
         if (checkPasswordComplexity(password)){
-            return "password is not strong enough, please ensure the password has 8+ characters, a capital letter, a number and a special charcter";
+            return "User has not been registered";
         }
         if (!checkCellPhoneNumber(cellPhoneNumber)){
-            return "Cell phone number incorrectly formatted or does not contain" + "international code";
+            return "User has not been registered";
         }
         
         this.username = username;
@@ -83,7 +83,7 @@ class AppLogin {
     
     public String returnLoginStatus(boolean loginSuccessful){
         if(loginSuccessful){
-            return "welcome" + firstName + ", " + lastName + "Happy to see you again";
+            return "Welcome " + firstName + ", " + lastName + " happy to see you again.";
         }
         return "Username or password is incorrect, try again";
     }
