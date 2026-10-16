@@ -59,10 +59,10 @@ class AppLogin {
     
     public String registerUser(String username, String password, String cellPhoneNumber){
         if (!checkUserName(username)){
-            return "User Successfully registered";
+            return "User has not been registered";
                     
         }
-        if (checkPasswordComplexity(password)){
+        if (!checkPasswordComplexity(password)){
             return "User has not been registered";
         }
         if (!checkCellPhoneNumber(cellPhoneNumber)){
