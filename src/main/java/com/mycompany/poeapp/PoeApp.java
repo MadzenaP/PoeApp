@@ -55,6 +55,67 @@ public class PoeApp {
         boolean loginSuccessful = login.loginUser(loginUsername, loginPassword);
         System.out.println(login.returnLoginStatus(loginSuccessful));
         
+        //starting of part 2 where users can send messages after they have logged in successfully
+        if(loginSuccessful){
+            runMessegingMenu(scanner);
+        }
+        
         scanner.close();
+    }
+    private static void runMessagingMenu(Scanner scanner){
+        boolean keepGoing = true;
+        while (keepGoing){
+            System.out.println("\n=== Messages ===");
+            System.out.println("1) Send new message");
+            System.out.println("2) Show all sent messages");
+            System.out.println("3) Show total message sent");
+            System.out.println("4) Quit");
+            System.out.print("Choose an option: ");
+            String option = scanner.nextLine();
+            
+            switch (option) {
+                case "1":
+                    sendNewMessage(scanner);
+                    break;
+                case "2":
+                    System.out.println(Message.printMessage());
+                    break;
+                case "3":
+                    System.out.println("Total message sent: " + Message.returnTotalMessagess());
+                    break;
+                case "4":
+                    keepGoing = false;
+                    break;
+                default:
+                    System.out.println("Please choose a valid option (1-4)");
+            }
+        }
+    }
+    private static void sendNewMessage(Scanner scanner){
+        System.out.println("Enter recipient cell number (e.g. +27718693002): ");
+        String recipient = scanner.nextLine();
+        
+        System.out.println("Enter your message (max 250 character): ");
+        String text = scanner.nextLine();
+        
+        Message message = new Message(recipient, text);
+        
+        String recipientCheck = message.CheckRecipientCell(recipient);
+        System.out.println(recipientCheck);
+        if (!recipientCheck.equals("Cell phone number successfully captured.")){
+            return;
+        }
+        
+        String lengthCheck = message.checkMessageLength(text);
+        System.out.println(lengthCheck);
+        if(!lengthCheck.equals("Message ready to send. ")){
+            return;
+        }
+        
+        System.out.println("Message Hash: " + message.createMessageHash());
+        
+        System.out.println("Choose an action - Send / Store / Disregard: ");
+        String choice = scanner.nextLine();
+        System.out.println(message.sentMessage(choice));
     }
 }
