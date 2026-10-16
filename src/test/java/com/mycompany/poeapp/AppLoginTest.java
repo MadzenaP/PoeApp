@@ -150,6 +150,7 @@ public class AppLoginTest {
         String password = "600McDon@ald&&";
         String cellPhoneNumber = "+27838968976";
         AppLogin instance = new AppLogin();
+        instance.registerUser(username, password, cellPhoneNumber);
         boolean expResult = true;
         boolean result = instance.loginUser(username, password);
         assertEquals(expResult, result);
@@ -202,8 +203,8 @@ public class AppLoginTest {
     @Test
     public void testGetFirstName() {
         System.out.println("getFirstName");
-        AppLogin instance = new AppLogin();
-        String expResult = "";
+        AppLogin instance = new AppLogin("Kyle", "Smith");
+        String expResult = "Kyle";
         String result = instance.getFirstName();
         assertEquals(expResult, result);
         
@@ -227,8 +228,8 @@ public class AppLoginTest {
     @Test
     public void testGetLastName() {
         System.out.println("getLastName");
-        AppLogin instance = new AppLogin();
-        String expResult = "";
+        AppLogin instance = new AppLogin("Kyle", "Smith");
+        String expResult = "Smith";
         String result = instance.getLastName();
         assertEquals(expResult, result);
         
@@ -266,6 +267,7 @@ public class AppLoginTest {
     public void testGetCellPhoneNumber() {
         System.out.println("getCellPhoneNumber");
         AppLogin instance = new AppLogin();
+        instance.registerUser("kyl_", "600McDon@ald&&", "+27838968976");
         String expResult = "";
         String result = instance.getCellPhoneNumber();
         assertEquals(expResult, result);
