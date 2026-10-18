@@ -7,72 +7,69 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 /**
  *
  * @author Student
  */
+// begining of part 2 for the app
 public class Message {
+    
     private static final String RECIPIENT_REGEX = "^\\+\\d{2,12}$";
     
     private static int messageCount = 0;
-    private static int totalMessageSent = 0;
-    private static final List<String> SENT_MESSAGES = new ArrayList<>();
+    private static int totalMessagesSent = 0;
+    private static String sentMessagesLog = "";
     
-    private static final String JSON_FILE = "storedMessage.json";
+    private static final String JSON_FILE = "storedMessages.json";
+
+    static boolean printMessage() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
-// ---------- Instance fields ----------
-private final String messageID;
-private final int messageNumber; // this message's position (0-indexed) among all created
-private String recipient;
-private String messageText;
-private String messageHash;
- 
-public Message(String recipient, String messageText) {
-this.recipient = recipient;
-this.messageText = messageText;
-this.messageID = generateMessageID();
-this.messageNumber = messageCount;
-messageCount++;
-}
- 
-// Lets a unit test fix the message ID so hash output is deterministic.
-public Message(String recipient, String messageText, String fixedMessageID) {
-this.recipient = recipient;
-this.messageText = messageText;
-this.messageID = fixedMessageID;
-this.messageNumber = messageCount;
-messageCount++;
-}
- 
-private static String generateMessageID() {
-Random random = new Random();
-StringBuilder id = new StringBuilder();
-for (int i = 0; i < 10; i++) {
-id.append(random.nextInt(10));
-}
-return id.toString();
-}
- 
-// ---------- Validation methods ----------
- 
-/**
-* Ensures the message ID is not more than ten characters.
-     * @return 
-*/
-public boolean checkMessageID() {
+    // Instance fields
+    
+    private final String messageID;
+    private final int messageNumber;
+    private String messageText;
+    private String messageHash;
+    private String recipient;
+    
+    public Message(String recipient, String messageText){
+        this.recipient = recipient;
+        this.messageText = messageText;
+        this.messageNumber = messageCount;
+        this.messageID = generateMessageID();
+        messageCount++;
+    }
+    
+    public Message(String recipient, String messageText, String fixedMessageID){
+        this.recipient = recipient;
+        this.messageText = messageText;
+        this.messageID = generateMessageID();
+        this.messageNumber = messageCount;
+        messageCount++;
+    }
+    
+    private static String generateMessageID(){
+        Random random = new Random();
+        StringBuilder id = new StringBuilder();
+        for (int i = 0; i < 10; i++){
+            id.append(random.nextInt(10));
+        }
+        return id.toString();
+    }
+    
+    // validation methods, ensures the message is less than 10 characters
+     public boolean checkMessageID() {
 return messageID != null && messageID.length() <= 10;
 }
  
-/**
-* Ensures the recipient cell number is no more than ten characters
-* long (after the international code) and starts with a code.
-     * @param recipientNumber
-     * @return 
-*/
+
+ //Ensures the recipient cell number is no more than ten characters
+ //long (after the international code) and starts with a code.
+
 public String checkRecipientCell(String recipientNumber) {
 if (recipientNumber != null && Pattern.matches(RECIPIENT_REGEX, recipientNumber)) {
 return "Cell phone number successfully captured.";
@@ -81,11 +78,9 @@ return "Cell phone number is incorrectly formatted or does not contain an "
 + "international code. Please correct the number and try again.";
 }
  
-/**
-* Ensures the message does not exceed 250 characters.
-     * @param message
-     * @return 
-*/
+
+ //Ensures the message does not exceed 250 characters.
+
 public String checkMessageLength(String message) {
 if (message != null && message.length() <= 250) {
 return "Message ready to send.";
@@ -96,17 +91,20 @@ return "Message exceeds 250 characters by " + over + "; please reduce the size."
  
 // ---------- Hash creation ----------
  
-/**
-* Creates the Message Hash: first two characters of the message ID,
-* ':', the message's sequential number, ':', then the first and
-* last words of the message (punctuation stripped), in caps.
-     * @return 
-*/
+
+ //Creates the Message Hash: first two characters of the message ID,
+ //':', the message's sequential number, ':', then the first and
+ //last words of the message (punctuation stripped), in caps.
+
 public String createMessageHash() {
 String idPrefix = messageID.substring(0, Math.min(2, messageID.length()));
-String[] words = messageText.trim().split("\\s+");
-String firstWord = stripPunctuation(words[0]);
-String lastWord = stripPunctuation(words[words.length - 1]);
+String trimmed = messageText.trim();
+int firstSpace = trimmed.indexOf(' ');
+int lastSpace = trimmed.lastIndexOf(' ');
+String firstWord = (firstSpace == -1) ? trimmed : trimmed.substring(0, firstSpace);
+String lastWord = (lastSpace == -1) ? trimmed : trimmed.substring(lastSpace + 1);
+firstWord = stripPunctuation(firstWord);
+lastWord = stripPunctuation(lastWord);
 this.messageHash = idPrefix + ":" + messageNumber + ":"
 + (firstWord + lastWord).toUpperCase();
 return this.messageHash;
@@ -118,12 +116,10 @@ return word.replaceAll("[^a-zA-Z0-9]", "");
  
 // ---------- Sending / storing / disregarding ----------
  
-/**
-* Lets the user choose to send, store, or disregard the message.
-* choice: "send", "store", or "disregard" (case-insensitive).
-     * @param choice
-     * @return 
-*/
+
+//Lets the user choose to send, store, or disregard the message.
+//choice: "send", "store", or "disregard" (case-insensitive).
+
 public String sentMessage(String choice) {
 if (choice == null) {
 return "Press 0 to delete the message.";
@@ -133,13 +129,12 @@ case "send":
 if (messageHash == null) {
 createMessageHash();
 }
-    {
-        int totalMessagesSent = 0;
-        totalMessagesSent++;
-    }
-SENT_MESSAGES.add(formatMessageDetails());
+totalMessagesSent++;
+if (!sentMessagesLog.isEmpty()) {
+sentMessagesLog += "\n\n";
+}
+sentMessagesLog += formatMessageDetails();
 return "Message successfully sent.";
-
 case "store":
 if (messageHash == null) {
 createMessageHash();
@@ -152,15 +147,13 @@ return "Press 0 to delete the message.";
 }
 }
  
-/**
-* Research note: stores the message as a JSON object, appended to
-* a JSON array in storedMessages.json. Built manually here with no
-* external dependency; swap in org.json or Gson if your project
-* already includes one of those libraries.
-* Reference for manual JSON escaping approach:
-* https://www.baeldung.com/java-json-escaping
-     * @return 
-*/
+ //Research note: stores the message as a JSON object, appended to
+ //a JSON array in storedMessages.json. Built manually here with no
+ //external dependency; swap in org.json or Gson if your project
+ //already includes one of those libraries.
+ //Reference for manual JSON escaping approach:
+
+
 public String storeMessage() {
 if (messageHash == null) {
 createMessageHash();
@@ -173,18 +166,14 @@ String json = "{"
 + "}";
 try {
 Path path = Path.of(JSON_FILE);
-List<String> existing = new ArrayList<>();
+String output = "[" + json + "]";
 if (Files.exists(path)) {
 String content = Files.readString(path).trim();
-if (content.length() > 2) { // more than just "[]"
-content = content.substring(1, content.length() - 1).trim();
-if (!content.isEmpty()) {
-existing.add(content);
+if (content.length() > 2 && content.endsWith("]")) {
+// keep the existing entries and add the new one before the closing bracket
+output = content.substring(0, content.length() - 1) + "," + json + "]";
 }
 }
-}
-existing.add(json);
-String output = "[" + String.join(",", existing) + "]";
 Files.writeString(path, output, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 } catch (IOException e) {
 System.out.println("Could not write to JSON file: " + e.getMessage());
@@ -208,24 +197,20 @@ return "Message ID: " + messageID
 + "\nMessage: " + messageText;
 }
  
-/**
-* Returns all the messages sent while the program is running.
-     * @return 
-*/
+ //Returns all the messages sent while the program is running.
+
 public static String printMessages() {
-if (SENT_MESSAGES.isEmpty()) {
+if (sentMessagesLog.isEmpty()) {
 return "No messages have been sent.";
 }
-return String.join("\n\n", SENT_MESSAGES);
+return sentMessagesLog;
 }
  
-/**
-* Returns the total number of messages sent.
-* (Method name matches the exact spelling given in the brief.)
-     * @return 
-*/
+
+// Returns the total number of messages sent.
+//(Method name matches the exact spelling given in the brief.)
+
 public static int returnTotalMessagess() {
-        int totalMessagesSent = 0;
 return totalMessagesSent;
 }
  
@@ -255,8 +240,11 @@ return messageNumber;
 static void resetCountersForTesting() {
 messageCount = 0;
 totalMessagesSent = 0;
-SENT_MESSAGES.clear();
+sentMessagesLog = "";
+}
 }
     
+  
     
-}
+    
+
