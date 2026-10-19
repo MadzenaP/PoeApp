@@ -47,7 +47,7 @@ public class Message {
     public Message(String recipient, String messageText, String fixedMessageID){
         this.recipient = recipient;
         this.messageText = messageText;
-        this.messageID = generateMessageID();
+        this.messageID = fixedMessageID;
         this.messageNumber = messageCount;
         messageCount++;
     }
