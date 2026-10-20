@@ -40,7 +40,7 @@ public class PoeApp {
             registrationMessage = login.registerUser(username, password, cellPhoneNumber);
             System.out.println(registrationMessage);
             
-            registered = registrationMessage.equals("USer successfully registered.");
+            registered = registrationMessage.equals("User Successfully registered");
             if(!registered){
                 System.out.println("please try again.\n");
             }
