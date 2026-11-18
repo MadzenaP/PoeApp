@@ -14,6 +14,8 @@ class AppLogin {
     
     private static final String CELL_REGEX = "^\\+27\\d{7,10}$";
     
+    public static final String REGISTRATION_SUCCESS = "User Successfully Registered.";
+    
     private String firstName;
     private String lastName;
     private String username;
@@ -74,6 +76,8 @@ class AppLogin {
         this.cellPhoneNumber = cellPhoneNumber;
         return "User Successfully registered";
     }
+    
+    //------------LOGIN--------
     public boolean loginUser(String username, String password){
         return this.username != null
                 && this.username.equals(username)
