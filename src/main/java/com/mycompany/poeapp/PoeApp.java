@@ -34,7 +34,7 @@ public class PoeApp {
             System.out.println("Enter password: ");
             String password = scanner.nextLine();
             
-            System.out.print("Enter a South African cell phone number");
+            System.out.print("Enter a South African cell phone number(must start with +27): ");
             String cellPhoneNumber = scanner.nextLine();
             
             printRegistrationFeedback(login, username, password, cellPhoneNumber);
@@ -182,7 +182,7 @@ public class PoeApp {
         }
         private static String readMessageText(Scanner scanner){
             while (true){
-                System.out.print("Enter your message");
+                System.out.print("Enter your message: ");
                 String text = scanner.nextLine();
                 if (text.trim().isEmpty()){
                     System.out.println("The message cannot be empty.");
