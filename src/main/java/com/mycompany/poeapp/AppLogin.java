@@ -16,11 +16,11 @@ class AppLogin {
     
     public static final String REGISTRATION_SUCCESS = "User Successfully Registered.";
     
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private String cellPhoneNumber;
+    private String firstName = "";
+    private String lastName = "";
+    private String username = "";
+    private String password = "";
+    private String cellPhoneNumber = "";
     
     public AppLogin(){
         
@@ -60,21 +60,15 @@ class AppLogin {
     // validates the supplied username,password and cellphone number
     
     public String registerUser(String username, String password, String cellPhoneNumber){
-        if (!checkUserName(username)){
+        if (!checkUserName(username) || !checkPasswordComplexity(password) || !checkCellPhoneNumber(cellPhoneNumber)){
             return "User has not been registered";
                     
-        }
-        if (!checkPasswordComplexity(password)){
-            return "User has not been registered";
-        }
-        if (!checkCellPhoneNumber(cellPhoneNumber)){
-            return "User has not been registered";
         }
         
         this.username = username;
         this.password = password;
         this.cellPhoneNumber = cellPhoneNumber;
-        return "User Successfully registered";
+        return REGISTRATION_SUCCESS;
     }
     
     //------------LOGIN--------
@@ -87,7 +81,7 @@ class AppLogin {
     
     public String returnLoginStatus(boolean loginSuccessful){
         if(loginSuccessful){
-            return "Welcome " + firstName + ", " + lastName + " happy to see you again.";
+            return "Welcome to QuickChat " + firstName + ", " + lastName + " happy to see you again.";
         }
         return "Username or password is incorrect, try again";
     }
