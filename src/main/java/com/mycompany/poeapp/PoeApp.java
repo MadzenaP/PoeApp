@@ -24,7 +24,7 @@ public class PoeApp {
         System.out.println("Enter last name: ");
         login.setLastName(scanner.nextLine());
         
-        String registrationMessage = "";
+
         boolean registered = false;
         
         while (!registered){
@@ -39,7 +39,7 @@ public class PoeApp {
             
             printRegistrationFeedback(login, username, password, cellPhoneNumber);
             
-            registrationMessage = login.registerUser(username, password, cellPhoneNumber);
+            String registrationMessage = login.registerUser(username, password, cellPhoneNumber);
             System.out.println(registrationMessage);
             
             registered = registrationMessage.equals(AppLogin.REGISTRATION_SUCCESS);
@@ -91,7 +91,7 @@ public class PoeApp {
     
     //-------------- QuickChat Main Menu ---------------------
     
-    private static void runMainMenu(Scanner Scanner, AppLogin login) {
+    private static void runMainMenu(Scanner scanner ,AppLogin login) {
         boolean keepGoing = true;
         while (keepGoing) {
             System.out.println("\n=== QuickChat Menu ===");
@@ -105,7 +105,7 @@ public class PoeApp {
             
             switch (option){
                 case "1":
-                    sendMessages(scanner, login);
+                    sendMessage(scanner, login);
                     break;
                 case "2":
                     System.out.println("Coming Soon.");
@@ -125,7 +125,7 @@ public class PoeApp {
     //------------ Send Messages -------------
             
     private static void sendMessage(Scanner scanner, AppLogin login) {
-        int howMany = readWholeNumber(scanner, "How many messages do you wish to enter? ", 1, Messages.MAX_MESSAGES);
+        int howMany = readWholeNumber(scanner, "How many messages do you wish to enter? ", 1, Message.MAX_MESSAGES);
         
         for (int i = 1; i<= howMany; i++){
             System.out.println("\n--- Message" + i + "of" + howMany + "---");
@@ -141,28 +141,29 @@ public class PoeApp {
             if (choice == 1){
                 System.out.println(message.sentMessage("send"));
                 System.out.println(message.displayMessageDetails());
-            }else if (choice ==2){
+            } else if (choice == 2){
                 System.out.println(message.sentMessage("disregard"));
                 String press = scanner.nextLine().trim();
-                if (press.equals("0"))
+                if (press.equals("0")){
                     System.out.println("Message deleted.");
-            }
-        }else{
-                System.out.println(message.sentMessage("store"));
                 }
-        System.out.println("\nTotal number of messages sent:" + Message.returnTotalMessagess());
-    }
+                }else {
+                System.out.println(message.sentMessage("store"));
+            }
+            }
+        System.out.println("\nTotal number of messages sent: " + Message.returnTotalMessagess());
+            }
     //keeps asking until user types a whole number between min and max//
     private static int readWholeNumber(Scanner scanner, String prompt, int min, int max){
         while(true){
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
             try{
-                int number = Interger.parseInt(input);
+                int number = Integer.parseInt(input);
                 if (number >= min && number <= max){
                     return number;
                 }
-            }catch (NumberFormatExeption e){
+            }catch (NumberFormatException e){
                 // fall through to the mesage below
             }
             System.out.println("Invalid input. Please enter a whole number from" + min + "to" + max + ".");
@@ -171,8 +172,104 @@ public class PoeApp {
         private static String readRecipient(Scanner scanner){
             while (true){
                 System.out.print("Enter the recipient cell number: ");
+                String recipient = scanner.nextLine().trim();
+                String result = Message.checkRecipientCell(recipient);
+                System.out.println(result);
+                if (result.equals(Message.RECIPIENT_SUCCESS)){
+                    return recipient;
+                }
             }
-    }
+        }
+        private static String readMessageText(Scanner scanner){
+            while (true){
+                System.out.print("Enter your message");
+                String text = scanner.nextLine();
+                if (text.trim().isEmpty()){
+                    System.out.println("The message cannot be empty.");
+                    continue;
+                }
+                String result = Message.checkMessageLength(text);
+                System.out.println(result);
+                if(result.equals(Message.LENGTH_SUCCESS)){
+                    return text;
+                }
+            }
+        }
+        private static int readChoice(Scanner scanner){
+            System.out.println("what would you like to do with this message");
+            System.out.println("1) Send Message");
+            System.out.println("2) Disregard Message");
+            System.out.println("3) Store Message to send later");
+            return readWholeNumber(scanner, "choose an option (1-3)", 1, 3);
+        }
+        // part 3 stored message menu
+        private static void runStoredMessagesMenu(Scanner scanner){
+            boolean back = false;
+            while (!back){
+                System.out.println("\n===Stored Messages===");
+                System.out.println("a) Display the sender and recipient of all stored messages");
+                System.out.println("b) Display the longest stored message");
+                System.out.println("c) Search for a message ID");
+                System.out.println("d) Search for all messages for a recipient");
+                System.out.println("e) Delete a message using the message hash");
+                System.out.println("f) Display a report of all stored messages");
+                System.out.println("g) Display a report of all sent messages");
+                System.out.println("0) back to the main menu");
+                System.out.print("Choose an option");
+                String option = scanner.nextLine().trim().toLowerCase();
+                
+                switch (option){
+                    case "a":
+                        System.out.println(Message.displaySendersAndRecipients());
+                        break;
+                    case "b":
+                        System.out.println(Message.findLongestStoredMessage());
+                        break;
+                    case "c":
+                        searchByID(scanner);
+                        break;
+                    case "d":
+                        searchByRecipient(scanner);
+                        break;
+                    case "e":
+                        System.out.print("Enter the message hash");
+                        System.out.println(Message.deleteMessageByHash(scanner.nextLine().trim().toUpperCase()));
+                        break;
+                    case "f":
+                        System.out.println(Message.reportStoredMessages());
+                        break;
+                    case "g":
+                        System.out.println(Message.printMessages());
+                        break;
+                    case "0":
+                        back = true;
+                        break;
+                    default:
+                        System.out.println("please choose valid option.");
+                }
+            }
+        }
+        private static void searchByID(Scanner scanner){
+            System.out.println("Enter the message ID: ");
+            Message found = Message.searchByMessageID(scanner.nextLine().trim());
+            if (found == null){
+                System.out.println("Message ID not found.");
+            }else{
+                System.out.println("Recipient: " + found.getRecipient());
+                System.out.println("Message: " + found.getMessageText());
+            }
+            }
+        private static void searchByRecipient(Scanner scanner){
+            System.out.print("Enter the recipient cell number: ");
+            String[] found = Message.searchByRecipient(scanner.nextLine().trim());
+            if (found.length == 0){
+                System.out.println("No messages found for that recipient.");
+            }else{
+                for (int i = 0; i < found.length; i ++){
+                    System.out.println((i + 1) + ")" + found[i]);
+                }
+            }
+        }
     }
     
            
