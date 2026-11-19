@@ -121,7 +121,7 @@ public class AppLoginTest {
         String password = "600McDon@ald&&";
         String cellPhoneNumber = "+27838968976";
         AppLogin instance = new AppLogin();
-        String expResult = "User Successfully registered";
+        String expResult = "User Successfully Registered.";
         String result = instance.registerUser(username, password, cellPhoneNumber);
         assertEquals(expResult, result);
         
@@ -180,7 +180,7 @@ public class AppLoginTest {
         instance.setFirstName("Kyle");
         instance.setLastName("Smith");
         boolean loginSuccessful = true;
-        String expResult = "Welcome Kyle, Smith happy to see you again.";
+        String expResult = "Welcome to QuickChat Kyle, Smith happy to see you again.";
         String result = instance.returnLoginStatus(loginSuccessful);
         assertEquals(expResult, result);
       
